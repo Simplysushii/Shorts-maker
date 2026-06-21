@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Shorts Maker — Animate Your Ideas</title>
+<title>Shorts Maker — 4 Channels</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,7 +16,7 @@
   body { background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:15px; line-height:1.6; min-height:100vh; }
   header { padding:20px 32px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:100; }
   .logo { font-family:var(--font-display); font-size:22px; font-weight:800; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .hf-badge { font-size:12px; color:var(--muted); background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:4px 12px; }
+  .badge { font-size:12px; color:var(--muted); background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:4px 12px; }
   .steps-nav { display:flex; padding:0 32px; border-bottom:1px solid var(--border); overflow-x:auto; }
   .step-tab { padding:14px 24px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; transition:color .2s,border-color .2s; user-select:none; background:none; border-top:none; border-left:none; border-right:none; }
   .step-tab:hover { color:var(--text); }
@@ -38,6 +38,21 @@
   .btn-secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
   .btn-success { background:var(--success); color:#0C0C0F; }
   .btn-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:28px; }
+  .info-box { background:rgba(123,92,250,.08); border:1px solid rgba(123,92,250,.3); border-radius:var(--radius); padding:14px 18px; font-size:13px; color:var(--muted); margin-bottom:24px; }
+  .info-box strong { color:var(--accent2); }
+  .success-box { background:rgba(34,211,160,.08); border:1px solid rgba(34,211,160,.3); border-radius:var(--radius); padding:14px 18px; font-size:13px; color:var(--success); margin-bottom:24px; }
+
+  /* ── Channel selector ── */
+  .channel-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:28px; }
+  @media(max-width:600px){ .channel-grid { grid-template-columns:1fr; } }
+  .channel-card { background:var(--surface); border:2px solid var(--border); border-radius:var(--radius); padding:18px 20px; cursor:pointer; transition:border-color .2s, background .2s; display:flex; align-items:center; gap:14px; }
+  .channel-card:hover { border-color:var(--accent); }
+  .channel-card.selected { border-color:var(--accent2); background:rgba(192,132,252,.08); }
+  .channel-icon { font-size:32px; flex-shrink:0; }
+  .channel-info h4 { font-size:15px; font-weight:700; margin-bottom:2px; }
+  .channel-info p { font-size:12px; color:var(--muted); }
+
+  /* ── Scenes ── */
   .scenes-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; margin-bottom:28px; }
   .scene-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; }
   .scene-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
@@ -47,37 +62,50 @@
   .scene-card label { font-size:11px; margin-top:12px; }
   .scene-remove { background:none; border:none; color:var(--muted); cursor:pointer; font-size:18px; padding:2px 6px; border-radius:6px; }
   .scene-remove:hover { color:var(--danger); }
-  .generate-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-bottom:28px; }
-  .gen-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; position:relative; }
+
+  /* ── Generate ── */
+  .generate-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px; margin-bottom:28px; }
+  .gen-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
   .gen-card-img { width:100%; aspect-ratio:9/16; object-fit:cover; display:block; }
   .gen-card-placeholder { width:100%; aspect-ratio:9/16; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--surface2); color:var(--muted); font-size:13px; gap:10px; padding:12px; text-align:center; }
   .spinner { width:28px; height:28px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
   @keyframes spin { to { transform:rotate(360deg); } }
-  .gen-card-label { padding:10px 14px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .gen-card-label { padding:8px 12px; font-size:11px; color:var(--muted); border-top:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .progress-bar-wrap { background:var(--surface2); border-radius:100px; height:6px; margin:16px 0; overflow:hidden; display:none; }
+  .progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:100px; transition:width .4s; }
+
+  /* ── Preview ── */
   .preview-wrapper { display:flex; gap:32px; flex-wrap:wrap; }
   .preview-phone { width:270px; flex-shrink:0; background:#000; border-radius:36px; border:3px solid var(--border); overflow:hidden; aspect-ratio:9/16; }
   #preview-canvas { width:100%; height:100%; display:block; object-fit:cover; }
   .preview-controls { flex:1; min-width:240px; }
   .preview-controls h3 { font-family:var(--font-display); font-size:18px; margin-bottom:16px; }
-  .scene-strip { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; max-height:320px; overflow-y:auto; }
+  .scene-strip { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; max-height:280px; overflow-y:auto; }
   .strip-item { display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:13px; }
   .strip-item.active { border-color:var(--accent); }
   .strip-thumb { width:32px; height:56px; object-fit:cover; border-radius:4px; background:var(--surface2); flex-shrink:0; }
   .strip-text { flex:1; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .toast { position:fixed; bottom:28px; right:28px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:14px 20px; font-size:14px; z-index:999; max-width:340px; opacity:0; transform:translateY(10px); transition:opacity .3s,transform .3s; pointer-events:none; }
-  .toast.show { opacity:1; transform:translateY(0); }
-  .toast.toast-ok { border-color:var(--success); color:var(--success); }
-  .toast.toast-err { border-color:var(--danger); color:var(--danger); }
-  .info-box { background:rgba(123,92,250,.08); border:1px solid rgba(123,92,250,.3); border-radius:var(--radius); padding:14px 18px; font-size:13px; color:var(--muted); margin-bottom:24px; }
-  .info-box strong { color:var(--accent2); }
-  .success-box { background:rgba(34,211,160,.08); border:1px solid rgba(34,211,160,.3); border-radius:var(--radius); padding:14px 18px; font-size:13px; color:var(--success); margin-bottom:24px; }
+
+  /* ── Voice guide ── */
+  .voice-steps { display:grid; gap:12px; margin-bottom:24px; }
+  .voice-step { display:flex; gap:14px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; }
+  .voice-step-num { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; color:#fff; }
+  .voice-step h4 { font-size:14px; font-weight:600; margin-bottom:3px; }
+  .voice-step p { font-size:13px; color:var(--muted); }
+
+  /* ── Export ── */
   .export-steps { display:grid; gap:16px; margin-bottom:28px; }
   .export-step { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; display:flex; gap:18px; align-items:flex-start; }
   .export-icon { font-size:28px; flex-shrink:0; margin-top:2px; }
   .export-step h4 { font-size:15px; font-weight:600; margin-bottom:4px; }
   .export-step p { font-size:13px; color:var(--muted); }
-  .progress-bar-wrap { background:var(--surface2); border-radius:100px; height:6px; margin:16px 0; overflow:hidden; display:none; }
-  .progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:100px; transition:width .4s; }
+
+  /* ── Toast ── */
+  .toast { position:fixed; bottom:28px; right:28px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:14px 20px; font-size:14px; z-index:999; max-width:340px; opacity:0; transform:translateY(10px); transition:opacity .3s,transform .3s; pointer-events:none; }
+  .toast.show { opacity:1; transform:translateY(0); }
+  .toast.toast-ok { border-color:var(--success); color:var(--success); }
+  .toast.toast-err { border-color:var(--danger); color:var(--danger); }
+
   @media(max-width:600px){ header{padding:16px 20px;} main{padding:24px 20px;} .steps-nav{padding:0 20px;} .preview-phone{width:200px;} }
 </style>
 </head>
@@ -85,11 +113,11 @@
 
 <header>
   <div class="logo">⚡ Shorts Maker</div>
-  <span class="hf-badge">Powered by Pollinations.ai · Free · No Token Needed</span>
+  <span class="badge">Free · No Token Needed</span>
 </header>
 
 <nav class="steps-nav">
-  <button class="step-tab active" data-panel="p-script">1 · Script</button>
+  <button class="step-tab active" data-panel="p-script">1 · Channel & Script</button>
   <button class="step-tab" data-panel="p-scenes">2 · Scenes</button>
   <button class="step-tab" data-panel="p-generate">3 · Generate</button>
   <button class="step-tab" data-panel="p-preview">4 · Preview</button>
@@ -98,18 +126,49 @@
 
 <main>
 
-  <!-- PANEL 1: Script -->
+  <!-- PANEL 1: Channel + Script -->
   <section id="p-script" class="panel active">
-    <p class="panel-title">Write your script</p>
-    <p class="panel-sub">Write your narration. Keep it under 60 seconds (~150 words). Leave a blank line between each scene.</p>
+    <p class="panel-title">Choose your channel</p>
+    <p class="panel-sub">Pick a channel style. This automatically sets the visual look for all your images.</p>
 
-    <div class="success-box">
-      ✅ <strong>No token or account needed!</strong> This version uses Pollinations.ai — a free AI image service that works on all networks including corporate ones.
+    <div class="channel-grid">
+      <div class="channel-card selected" data-channel="space">
+        <div class="channel-icon">🚀</div>
+        <div class="channel-info">
+          <h4>Space</h4>
+          <p>Cosmic, cinematic, NASA-style visuals</p>
+        </div>
+      </div>
+      <div class="channel-card" data-channel="horror">
+        <div class="channel-icon">👻</div>
+        <div class="channel-info">
+          <h4>Horror / Mystery</h4>
+          <p>Dark, eerie, atmospheric, cinematic</p>
+        </div>
+      </div>
+      <div class="channel-card" data-channel="kids">
+        <div class="channel-icon">🧒</div>
+        <div class="channel-info">
+          <h4>Kids Channel</h4>
+          <p>Bright, colorful, Pixar-style 3D cartoon</p>
+        </div>
+      </div>
+      <div class="channel-card" data-channel="history">
+        <div class="channel-icon">📜</div>
+        <div class="channel-info">
+          <h4>History Facts</h4>
+          <p>Epic oil painting style, dramatic, rich</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box" id="style-preview">
+      <strong>🚀 Space style:</strong> deep space photography, NASA aesthetic, dark cosmic background, nebula colors purple and blue, cinematic, photorealistic, 8K
     </div>
 
     <div class="field">
       <label>Short title</label>
-      <input type="text" id="short-title" placeholder="e.g. 5 Facts About Black Holes"/>
+      <input type="text" id="short-title" placeholder="e.g. 5 Amazing Facts About Black Holes"/>
     </div>
     <div class="field">
       <label>Full narration script</label>
@@ -125,11 +184,9 @@
 
   <!-- PANEL 2: Scenes -->
   <section id="p-scenes" class="panel">
-    <p class="panel-title">Build your scenes</p>
-    <p class="panel-sub">Edit the narration and image prompt for each scene.</p>
-    <div class="info-box">
-      <strong>Tip:</strong> Be specific in image prompts. E.g. <em>"dramatic deep space nebula, photorealistic, cinematic lighting"</em>
-    </div>
+    <p class="panel-title">Your scenes</p>
+    <p class="panel-sub">The channel style has been automatically added to every image prompt. You can still edit them.</p>
+    <div class="info-box" id="scenes-style-note"></div>
     <div class="scenes-grid" id="scenes-grid"></div>
     <button class="btn btn-secondary" id="btn-add-scene">+ Add scene</button>
     <div class="btn-row">
@@ -141,9 +198,9 @@
   <!-- PANEL 3: Generate -->
   <section id="p-generate" class="panel">
     <p class="panel-title">Generate images</p>
-    <p class="panel-sub">Images are generated by Pollinations.ai — free, no token needed, works on all networks.</p>
+    <p class="panel-sub">All images will use your channel's visual style for a cohesive look.</p>
     <div class="info-box">
-      <strong>How it works:</strong> Each image takes about 10–20 seconds. If one fails, click Retry on that scene.
+      <strong>Powered by Pollinations.ai</strong> — free, no account needed. Each image takes about 10–20 seconds.
     </div>
     <div class="progress-bar-wrap" id="gen-progress-wrap">
       <div class="progress-bar-fill" id="gen-progress-fill" style="width:0%"></div>
@@ -159,7 +216,7 @@
   <!-- PANEL 4: Preview -->
   <section id="p-preview" class="panel">
     <p class="panel-title">Preview your Short</p>
-    <p class="panel-sub">Watch your scenes with Ken Burns animation and browser voiceover.</p>
+    <p class="panel-sub">Click each scene to preview it. Use your own voice when you export.</p>
     <div class="preview-wrapper">
       <div class="preview-phone">
         <img id="preview-canvas" src="" alt="Preview"/>
@@ -167,11 +224,46 @@
       <div class="preview-controls">
         <h3>Scenes</h3>
         <div class="scene-strip" id="scene-strip"></div>
-        <button class="btn btn-primary" id="btn-play-preview">▶ Play with voiceover</button>
-        <p style="font-size:12px;color:var(--muted);margin-top:12px;">Uses your browser's built-in text-to-speech. Works best in Chrome.</p>
-        <div class="btn-row" style="margin-top:24px;">
+
+        <div style="margin-top:8px;margin-bottom:20px;">
+          <p style="font-size:13px;color:var(--muted);">Click any scene above to preview that image.</p>
+        </div>
+
+        <h3 style="margin-bottom:14px;">🎙️ Record your own voice</h3>
+        <div class="voice-steps">
+          <div class="voice-step">
+            <div class="voice-step-num">1</div>
+            <div>
+              <h4>Download your script</h4>
+              <p>Go to Step 5 and download the script .txt file. This has your full narration.</p>
+            </div>
+          </div>
+          <div class="voice-step">
+            <div class="voice-step-num">2</div>
+            <div>
+              <h4>Record on your phone</h4>
+              <p>Open any free Voice Recorder app on your phone. Read the script naturally. Record each scene separately or all at once.</p>
+            </div>
+          </div>
+          <div class="voice-step">
+            <div class="voice-step-num">3</div>
+            <div>
+              <h4>Transfer to laptop</h4>
+              <p>Send the audio file to yourself via WhatsApp, email, or Google Drive. Download it on your laptop.</p>
+            </div>
+          </div>
+          <div class="voice-step">
+            <div class="voice-step-num">4</div>
+            <div>
+              <h4>Import into CapCut</h4>
+              <p>In CapCut, add your images first, then drag your audio file onto the timeline. Trim and sync each scene to your voice.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
           <button class="btn btn-secondary" id="btn-back-gen">← Back</button>
-          <button class="btn btn-success" id="btn-go-export">Export guide →</button>
+          <button class="btn btn-success" id="btn-go-export">Export →</button>
         </div>
       </div>
     </div>
@@ -180,13 +272,13 @@
   <!-- PANEL 5: Export -->
   <section id="p-export" class="panel">
     <p class="panel-title">Export your Short</p>
-    <p class="panel-sub">Download your assets and assemble in a free video editor.</p>
+    <p class="panel-sub">Download everything and assemble your final video in CapCut for free.</p>
     <div class="export-steps">
       <div class="export-step">
         <div class="export-icon">🖼️</div>
         <div>
           <h4>Download all scene images</h4>
-          <p>Save each generated image as a PNG. These are your video frames.</p>
+          <p>Save all your AI-generated images as PNG files.</p>
           <div class="btn-row" style="margin-top:12px;">
             <button class="btn btn-secondary" id="btn-download-all">Download all images</button>
           </div>
@@ -196,7 +288,7 @@
         <div class="export-icon">📝</div>
         <div>
           <h4>Download your script</h4>
-          <p>Save the narration to record voiceover or import into a TTS tool.</p>
+          <p>Use this to record your voiceover on your phone.</p>
           <div class="btn-row" style="margin-top:12px;">
             <button class="btn btn-secondary" id="btn-download-script">Download script .txt</button>
           </div>
@@ -206,14 +298,21 @@
         <div class="export-icon">🎬</div>
         <div>
           <h4>Assemble in CapCut (free)</h4>
-          <p>Import images into <strong>CapCut</strong> (free at capcut.com), add voiceover, apply Ken Burns zoom per clip, export at 1080×1920 for YouTube Shorts.</p>
+          <p>Go to <strong>capcut.com</strong> → New Project → Import your images → Add your recorded voice → Apply Ken Burns zoom to each image → Export at <strong>1080×1920</strong> (vertical).</p>
+        </div>
+      </div>
+      <div class="export-step">
+        <div class="export-icon">📱</div>
+        <div>
+          <h4>Add captions (optional but recommended)</h4>
+          <p>In CapCut, use <strong>Auto Captions</strong> — it reads your voice and adds subtitles automatically. This doubles your views on YouTube Shorts.</p>
         </div>
       </div>
       <div class="export-step">
         <div class="export-icon">📤</div>
         <div>
           <h4>Upload to YouTube Shorts</h4>
-          <p>Upload your video and add #Shorts in the title. YouTube will automatically list it as a Short.</p>
+          <p>Upload your video. Add <strong>#Shorts</strong> in the title. Keep the title curiosity-driven e.g. "You won't believe what happens near a black hole…"</p>
         </div>
       </div>
     </div>
@@ -225,7 +324,30 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const APP = { title:'', script:'', scenes:[], currentPreviewIdx:0 };
+const CHANNELS = {
+  space: {
+    label: '🚀 Space',
+    style: 'deep space photography, NASA aesthetic, dark cosmic background, nebula colors purple and blue, cinematic, photorealistic, 8K',
+    note: 'All images will look like NASA space photography — dark, cosmic, and cinematic.'
+  },
+  horror: {
+    label: '👻 Horror / Mystery',
+    style: 'dark and eerie atmosphere, dense fog, dramatic shadows, horror movie still, muted desaturated colors, unsettling, cinematic, photorealistic',
+    note: 'All images will have a dark, eerie horror movie look with fog and dramatic shadows.'
+  },
+  kids: {
+    label: '🧒 Kids Channel',
+    style: 'bright colorful cartoon, Pixar style 3D animation, friendly cute characters, soft warm lighting, cheerful happy mood, clean simple background',
+    note: 'All images will look like Pixar 3D cartoons — bright, colorful, and friendly.'
+  },
+  history: {
+    label: '📜 History Facts',
+    style: 'epic historical oil painting style, dramatic cinematic lighting, ancient world, rich warm colors, detailed, museum quality artwork',
+    note: 'All images will look like epic historical paintings — dramatic, rich, and detailed.'
+  }
+};
+
+const APP = { channel:'space', title:'', script:'', scenes:[] };
 
 function $(id){ return document.getElementById(id); }
 
@@ -248,6 +370,18 @@ document.querySelectorAll('.step-tab').forEach(btn=>{
   btn.addEventListener('click',()=>switchTab(btn.dataset.panel));
 });
 
+// ── Channel selection ──
+document.querySelectorAll('.channel-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    document.querySelectorAll('.channel-card').forEach(c=>c.classList.remove('selected'));
+    card.classList.add('selected');
+    APP.channel = card.dataset.channel;
+    const ch = CHANNELS[APP.channel];
+    $('style-preview').innerHTML = `<strong>${ch.label} style:</strong> ${ch.style}`;
+  });
+});
+
+// ── Word count ──
 $('script-text').addEventListener('input', updateWordCount);
 function updateWordCount(){
   const words=$('script-text').value.trim().split(/\s+/).filter(Boolean).length;
@@ -255,20 +389,21 @@ function updateWordCount(){
   $('dur-est').textContent=Math.round(words/2.5)+'s';
 }
 
-// ── Build image URL using Pollinations.ai — no token needed ──
-function buildImageUrl(prompt){
-  const encoded = encodeURIComponent(prompt + ', vertical portrait 9:16, cinematic');
-  // Add random seed so each generation is unique
-  const seed = Math.floor(Math.random() * 999999);
-  return `https://image.pollinations.ai/prompt/${encoded}?width=576&height=1024&seed=${seed}&nologo=true`;
-}
-
-function autoPrompt(text){
-  return text.split(' ').slice(0,12).join(' ') + ', cinematic lighting, photorealistic, ultra detailed';
-}
-
 function escHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Build prompt = scene description + channel style
+function buildPrompt(narration){
+  const subject = narration.split(' ').slice(0,10).join(' ');
+  return `${subject}, ${CHANNELS[APP.channel].style}`;
+}
+
+// Build Pollinations URL
+function buildImageUrl(prompt){
+  const encoded = encodeURIComponent(prompt);
+  const seed = Math.floor(Math.random()*999999);
+  return `https://image.pollinations.ai/prompt/${encoded}?width=576&height=1024&seed=${seed}&nologo=true`;
 }
 
 // ── Step 1 ──
@@ -278,10 +413,12 @@ $('btn-split-scenes').addEventListener('click',()=>{
   APP.title=$('short-title').value.trim()||'My Short';
   APP.script=script;
   const paragraphs=script.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
-  APP.scenes=paragraphs.map(p=>({ narration:p, prompt:autoPrompt(p), imageUrl:null }));
+  APP.scenes=paragraphs.map(p=>({ narration:p, prompt:buildPrompt(p), imageUrl:null }));
+  const ch=CHANNELS[APP.channel];
+  $('scenes-style-note').innerHTML=`<strong>${ch.label}:</strong> ${ch.note} Style has been added to all prompts below.`;
   renderScenes();
   switchTab('p-scenes');
-  toast(`Split into ${APP.scenes.length} scene(s) ✓`,'ok');
+  toast(`${APP.scenes.length} scenes created with ${ch.label} style ✓`,'ok');
 });
 
 // ── Step 2 ──
@@ -296,9 +433,9 @@ function renderScenes(){
         <span class="scene-num">Scene ${i+1}</span>
         <button class="scene-remove" data-i="${i}">×</button>
       </div>
-      <label>Narration</label>
+      <label>Narration (what you will say)</label>
       <textarea data-field="narration" data-i="${i}">${escHtml(scene.narration)}</textarea>
-      <label>Image prompt (describe what the AI should draw)</label>
+      <label>Image prompt (what AI will draw)</label>
       <input type="text" data-field="prompt" data-i="${i}" value="${escHtml(scene.prompt)}"/>
     `;
     grid.appendChild(card);
@@ -312,7 +449,7 @@ function renderScenes(){
 }
 
 $('btn-add-scene').addEventListener('click',()=>{
-  APP.scenes.push({narration:'',prompt:'',imageUrl:null});
+  APP.scenes.push({narration:'',prompt:CHANNELS[APP.channel].style,imageUrl:null});
   renderScenes();
 });
 $('btn-back-script').addEventListener('click',()=>switchTab('p-script'));
@@ -331,17 +468,15 @@ function renderGenerateGrid(){
     card.className='gen-card';
     card.id=`gen-card-${i}`;
     if(scene.imageUrl){
-      card.innerHTML=`
-        <img class="gen-card-img" src="${scene.imageUrl}" alt="Scene ${i+1}"/>
-        <div class="gen-card-label">Scene ${i+1} ✓</div>`;
+      card.innerHTML=`<img class="gen-card-img" src="${scene.imageUrl}" alt="Scene ${i+1}"/><div class="gen-card-label">Scene ${i+1} ✓</div>`;
     } else {
       card.innerHTML=`
         <div class="gen-card-placeholder" id="gen-ph-${i}">
-          <span style="font-size:32px">🎨</span>
+          <span style="font-size:28px">🎨</span>
           <span>Not generated yet</span>
           <button class="btn btn-secondary" style="font-size:12px;padding:8px 14px;" onclick="generateScene(${i})">Generate</button>
         </div>
-        <div class="gen-card-label">Scene ${i+1}: ${escHtml((scene.prompt||'').slice(0,40))}…</div>`;
+        <div class="gen-card-label">Scene ${i+1}</div>`;
     }
     grid.appendChild(card);
   });
@@ -365,42 +500,33 @@ $('btn-gen-all').addEventListener('click', async()=>{
 window.generateScene = async function(i){
   const scene=APP.scenes[i];
   const card=$(`gen-card-${i}`);
-
-  // Show spinner
   card.innerHTML=`
-    <div class="gen-card-placeholder" id="gen-ph-${i}">
+    <div class="gen-card-placeholder">
       <div class="spinner"></div>
-      <span style="font-size:12px">Generating… (~15s)</span>
+      <span style="font-size:12px">Generating…</span>
     </div>
     <div class="gen-card-label">Scene ${i+1}: generating…</div>`;
-
   try{
-    const url = buildImageUrl(scene.prompt || scene.narration);
-
-    // Load image via Image object to detect errors
-    await new Promise((resolve, reject)=>{
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = ()=>{
-        APP.scenes[i].imageUrl = url;
-        card.innerHTML=`
-          <img class="gen-card-img" src="${url}" alt="Scene ${i+1}"/>
-          <div class="gen-card-label">Scene ${i+1} ✓</div>`;
+    const url=buildImageUrl(scene.prompt||scene.narration);
+    await new Promise((resolve,reject)=>{
+      const img=new Image();
+      img.crossOrigin='anonymous';
+      img.onload=()=>{
+        APP.scenes[i].imageUrl=url;
+        card.innerHTML=`<img class="gen-card-img" src="${url}" alt="Scene ${i+1}"/><div class="gen-card-label">Scene ${i+1} ✓</div>`;
         resolve();
       };
-      img.onerror = ()=> reject(new Error('Image failed to load'));
-      img.src = url;
+      img.onerror=()=>reject(new Error('Image failed to load'));
+      img.src=url;
     });
-
     toast(`Scene ${i+1} done ✓`,'ok');
     $('btn-go-preview').disabled=!APP.scenes.every(s=>s.imageUrl);
-
   }catch(e){
     card.innerHTML=`
-      <div class="gen-card-placeholder" id="gen-ph-${i}">
+      <div class="gen-card-placeholder">
         <span style="font-size:24px">⚠️</span>
-        <span style="font-size:12px;color:var(--danger);text-align:center;padding:0 12px">Failed. Check your internet.</span>
-        <button class="btn btn-secondary" style="font-size:12px;padding:8px 14px;margin-top:8px" onclick="generateScene(${i})">Retry</button>
+        <span style="font-size:12px;color:var(--danger);text-align:center;padding:0 8px">Failed. Check internet.</span>
+        <button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;margin-top:6px" onclick="generateScene(${i})">Retry</button>
       </div>
       <div class="gen-card-label">Scene ${i+1}: failed</div>`;
     toast(`Scene ${i+1} failed. Try Retry.`,'err');
@@ -416,7 +542,7 @@ function renderPreview(){
   APP.scenes.forEach((scene,i)=>{
     const item=document.createElement('div');
     item.className='strip-item'+(i===0?' active':'');
-    item.innerHTML=`<img class="strip-thumb" src="${scene.imageUrl}" alt="Scene ${i+1}"/><span class="strip-text">Scene ${i+1}: ${escHtml(scene.narration.slice(0,60))}</span>`;
+    item.innerHTML=`<img class="strip-thumb" src="${scene.imageUrl}" alt="Scene ${i+1}"/><span class="strip-text">Scene ${i+1}: ${escHtml(scene.narration.slice(0,55))}</span>`;
     item.addEventListener('click',()=>{
       document.querySelectorAll('.strip-item').forEach(x=>x.classList.remove('active'));
       item.classList.add('active');
@@ -428,7 +554,6 @@ function renderPreview(){
 }
 
 function showPreviewScene(i){
-  APP.currentPreviewIdx=i;
   const canvas=$('preview-canvas');
   canvas.src=APP.scenes[i].imageUrl;
   canvas.style.animation='none';
@@ -440,24 +565,8 @@ const kbStyle=document.createElement('style');
 kbStyle.textContent=`@keyframes kenburns{0%{transform:scale(1) translate(0,0);}100%{transform:scale(1.12) translate(-2%,-2%);}}`;
 document.head.appendChild(kbStyle);
 
-$('btn-play-preview').addEventListener('click',()=>{
-  if(!('speechSynthesis' in window)){ toast('Text-to-speech not supported. Try Chrome.','err'); return; }
-  window.speechSynthesis.cancel();
-  playSceneVoiceover(0);
-});
-
-function playSceneVoiceover(i){
-  if(i>=APP.scenes.length) return;
-  document.querySelectorAll('.strip-item').forEach((x,idx)=>x.classList.toggle('active',idx===i));
-  showPreviewScene(i);
-  const utt=new SpeechSynthesisUtterance(APP.scenes[i].narration);
-  utt.rate=0.95;
-  utt.onend=()=>playSceneVoiceover(i+1);
-  window.speechSynthesis.speak(utt);
-}
-
-$('btn-back-gen').addEventListener('click',()=>{ window.speechSynthesis.cancel(); switchTab('p-generate'); });
-$('btn-go-export').addEventListener('click',()=>{ window.speechSynthesis.cancel(); switchTab('p-export'); });
+$('btn-back-gen').addEventListener('click',()=>switchTab('p-generate'));
+$('btn-go-export').addEventListener('click',()=>switchTab('p-export'));
 
 // ── Step 5 ──
 $('btn-download-all').addEventListener('click',()=>{
@@ -473,7 +582,8 @@ $('btn-download-all').addEventListener('click',()=>{
 });
 
 $('btn-download-script').addEventListener('click',()=>{
-  const lines=[`${APP.title}\n${'─'.repeat(40)}\n`];
+  const ch=CHANNELS[APP.channel];
+  const lines=[`${APP.title}\nChannel: ${ch.label}\n${'─'.repeat(40)}\n`];
   APP.scenes.forEach((s,i)=>lines.push(`[Scene ${i+1}]\n${s.narration}\n`));
   const blob=new Blob([lines.join('\n')],{type:'text/plain'});
   const a=document.createElement('a');
@@ -485,10 +595,12 @@ $('btn-download-script').addEventListener('click',()=>{
 
 $('btn-start-over').addEventListener('click',()=>{
   if(!confirm('Start a new Short? Current work will be lost.')) return;
-  window.speechSynthesis.cancel();
-  Object.assign(APP,{title:'',script:'',scenes:[],currentPreviewIdx:0});
+  Object.assign(APP,{channel:'space',title:'',script:'',scenes:[]});
   $('script-text').value='';
   $('short-title').value='';
+  document.querySelectorAll('.channel-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelector('[data-channel="space"]').classList.add('selected');
+  $('style-preview').innerHTML=`<strong>🚀 Space style:</strong> ${CHANNELS.space.style}`;
   updateWordCount();
   switchTab('p-script');
 });
