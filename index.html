@@ -7,433 +7,81 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg:        #0C0C0F;
-    --surface:   #16161C;
-    --surface2:  #1E1E28;
-    --border:    #2A2A38;
-    --accent:    #7B5CFA;
-    --accent2:   #C084FC;
-    --text:      #F0EFF8;
-    --muted:     #8887A0;
-    --success:   #22D3A0;
-    --danger:    #F87171;
-    --radius:    12px;
-    --font-display: 'Syne', sans-serif;
-    --font-body:    'Inter', sans-serif;
+    --bg:#0C0C0F; --surface:#16161C; --surface2:#1E1E28; --border:#2A2A38;
+    --accent:#7B5CFA; --accent2:#C084FC; --text:#F0EFF8; --muted:#8887A0;
+    --success:#22D3A0; --danger:#F87171; --radius:12px;
+    --font-display:'Syne',sans-serif; --font-body:'Inter',sans-serif;
   }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  /* ── Header ── */
-  header {
-    padding: 20px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 100;
-  }
-  .logo {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.5px;
-  }
-  .hf-badge {
-    font-size: 12px;
-    color: var(--muted);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 4px 12px;
-  }
-
-  /* ── Steps nav ── */
-  .steps-nav {
-    display: flex;
-    gap: 0;
-    padding: 0 32px;
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-  }
-  .step-tab {
-    padding: 14px 24px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-    transition: color .2s, border-color .2s;
-    user-select: none;
-    background: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
-  .step-tab:hover { color: var(--text); }
-  .step-tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
-  .step-tab.done { color: var(--success); }
-
-  /* ── Main layout ── */
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 36px 32px;
-  }
-
-  /* ── Panels ── */
-  .panel { display: none; }
-  .panel.active { display: block; }
-
-  .panel-title {
-    font-family: var(--font-display);
-    font-size: 28px;
-    font-weight: 800;
-    margin-bottom: 6px;
-    letter-spacing: -0.5px;
-  }
-  .panel-sub {
-    color: var(--muted);
-    margin-bottom: 28px;
-    font-size: 14px;
-  }
-
-  /* ── Form elements ── */
-  label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    margin-bottom: 8px;
-  }
-  textarea, input[type="text"], input[type="password"] {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 15px;
-    padding: 14px 16px;
-    resize: vertical;
-    transition: border-color .2s;
-    outline: none;
-  }
-  textarea:focus, input:focus {
-    border-color: var(--accent);
-  }
-  textarea { min-height: 160px; }
-
-  .field { margin-bottom: 24px; }
-
-  /* ── Buttons ── */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border-radius: var(--radius);
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: opacity .2s, transform .1s;
-  }
-  .btn:active { transform: scale(.97); }
-  .btn:disabled { opacity: .4; cursor: not-allowed; }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff;
-  }
-  .btn-secondary {
-    background: var(--surface2);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-success {
-    background: var(--success);
-    color: #0C0C0F;
-  }
-  .btn-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 28px;
-  }
-
-  /* ── Scene cards ── */
-  .scenes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-  .scene-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px;
-    position: relative;
-  }
-  .scene-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-  .scene-num {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--accent2);
-    text-transform: uppercase;
-    letter-spacing: .1em;
-  }
-  .scene-card textarea { min-height: 80px; font-size: 13px; }
-  .scene-card input[type="text"] { font-size: 13px; margin-top: 8px; }
-  .scene-card label { font-size: 11px; margin-top: 12px; }
-  .scene-remove {
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    padding: 2px 6px;
-    border-radius: 6px;
-  }
-  .scene-remove:hover { color: var(--danger); background: rgba(248,113,113,.08); }
-
-  /* ── API key panel ── */
-  .api-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    margin-bottom: 28px;
-  }
-  .api-box p { color: var(--muted); font-size: 13px; margin-top: 8px; }
-  .api-box a { color: var(--accent2); }
-
-  /* ── Generate panel ── */
-  .generate-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-  .gen-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    position: relative;
-  }
-  .gen-card-img {
-    width: 100%;
-    aspect-ratio: 9/16;
-    object-fit: cover;
-    display: block;
-    background: var(--surface2);
-  }
-  .gen-card-placeholder {
-    width: 100%;
-    aspect-ratio: 9/16;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface2);
-    color: var(--muted);
-    font-size: 13px;
-    gap: 10px;
-  }
-  .spinner {
-    width: 28px; height: 28px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .gen-card-label {
-    padding: 10px 14px;
-    font-size: 12px;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .gen-status {
-    position: absolute;
-    top: 8px; right: 8px;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 20px;
-  }
-  .gen-status.done { background: var(--success); color: #0C0C0F; }
-  .gen-status.loading { background: var(--accent); color: #fff; }
-  .gen-status.error { background: var(--danger); color: #fff; }
-
-  /* ── Preview panel ── */
-  .preview-wrapper {
-    display: flex;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-  .preview-phone {
-    width: 270px;
-    flex-shrink: 0;
-    background: #000;
-    border-radius: 36px;
-    border: 3px solid var(--border);
-    overflow: hidden;
-    position: relative;
-    aspect-ratio: 9/16;
-  }
-  #preview-canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-  }
-  .preview-controls {
-    flex: 1;
-    min-width: 240px;
-  }
-  .preview-controls h3 {
-    font-family: var(--font-display);
-    font-size: 18px;
-    margin-bottom: 16px;
-  }
-  .scene-strip {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 24px;
-    max-height: 320px;
-    overflow-y: auto;
-  }
-  .strip-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color .2s;
-    font-size: 13px;
-  }
-  .strip-item:hover, .strip-item.active { border-color: var(--accent); }
-  .strip-thumb {
-    width: 32px; height: 56px;
-    object-fit: cover;
-    border-radius: 4px;
-    background: var(--surface2);
-    flex-shrink: 0;
-  }
-  .strip-text { flex: 1; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  /* ── Info / toast ── */
-  .toast {
-    position: fixed;
-    bottom: 28px; right: 28px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 20px;
-    font-size: 14px;
-    z-index: 999;
-    max-width: 340px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity .3s, transform .3s;
-    pointer-events: none;
-  }
-  .toast.show { opacity: 1; transform: translateY(0); }
-  .toast.toast-ok { border-color: var(--success); color: var(--success); }
-  .toast.toast-err { border-color: var(--danger); color: var(--danger); }
-
-  .info-box {
-    background: rgba(123,92,250,.08);
-    border: 1px solid rgba(123,92,250,.3);
-    border-radius: var(--radius);
-    padding: 14px 18px;
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
-  .info-box strong { color: var(--accent2); }
-
-  /* ── Export section ── */
-  .export-steps {
-    display: grid;
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-  .export-step {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 22px;
-    display: flex;
-    gap: 18px;
-    align-items: flex-start;
-  }
-  .export-icon {
-    font-size: 28px;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-  .export-step h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-  .export-step p { font-size: 13px; color: var(--muted); }
-
-  /* ── Progress bar ── */
-  .progress-bar-wrap {
-    background: var(--surface2);
-    border-radius: 100px;
-    height: 6px;
-    margin: 16px 0;
-    overflow: hidden;
-    display: none;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 100px;
-    transition: width .4s;
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 600px) {
-    header { padding: 16px 20px; }
-    main { padding: 24px 20px; }
-    .steps-nav { padding: 0 20px; }
-    .preview-phone { width: 200px; }
-  }
+  body { background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:15px; line-height:1.6; min-height:100vh; }
+  header { padding:20px 32px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:100; }
+  .logo { font-family:var(--font-display); font-size:22px; font-weight:800; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .hf-badge { font-size:12px; color:var(--muted); background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:4px 12px; }
+  .steps-nav { display:flex; padding:0 32px; border-bottom:1px solid var(--border); overflow-x:auto; }
+  .step-tab { padding:14px 24px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; transition:color .2s,border-color .2s; user-select:none; background:none; border-top:none; border-left:none; border-right:none; }
+  .step-tab:hover { color:var(--text); }
+  .step-tab.active { color:var(--accent2); border-bottom-color:var(--accent2); }
+  main { max-width:1100px; margin:0 auto; padding:36px 32px; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  .panel-title { font-family:var(--font-display); font-size:28px; font-weight:800; margin-bottom:6px; }
+  .panel-sub { color:var(--muted); margin-bottom:28px; font-size:14px; }
+  label { display:block; font-size:13px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  textarea, input[type="text"], input[type="password"] { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); color:var(--text); font-family:var(--font-body); font-size:15px; padding:14px 16px; resize:vertical; transition:border-color .2s; outline:none; }
+  textarea:focus, input:focus { border-color:var(--accent); }
+  textarea { min-height:160px; }
+  .field { margin-bottom:24px; }
+  .btn { display:inline-flex; align-items:center; gap:8px; padding:12px 24px; border-radius:var(--radius); font-family:var(--font-body); font-size:14px; font-weight:600; cursor:pointer; border:none; transition:opacity .2s,transform .1s; }
+  .btn:active { transform:scale(.97); }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+  .btn-primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; }
+  .btn-secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
+  .btn-success { background:var(--success); color:#0C0C0F; }
+  .btn-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:28px; }
+  .scenes-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; margin-bottom:28px; }
+  .scene-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; }
+  .scene-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .scene-num { font-size:11px; font-weight:700; color:var(--accent2); text-transform:uppercase; letter-spacing:.1em; }
+  .scene-card textarea { min-height:80px; font-size:13px; }
+  .scene-card input[type="text"] { font-size:13px; margin-top:8px; }
+  .scene-card label { font-size:11px; margin-top:12px; }
+  .scene-remove { background:none; border:none; color:var(--muted); cursor:pointer; font-size:18px; padding:2px 6px; border-radius:6px; }
+  .scene-remove:hover { color:var(--danger); }
+  .api-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:28px; }
+  .api-box p { color:var(--muted); font-size:13px; margin-top:8px; }
+  .api-box a { color:var(--accent2); }
+  .generate-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-bottom:28px; }
+  .gen-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; position:relative; }
+  .gen-card-img { width:100%; aspect-ratio:9/16; object-fit:cover; display:block; background:var(--surface2); }
+  .gen-card-placeholder { width:100%; aspect-ratio:9/16; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--surface2); color:var(--muted); font-size:13px; gap:10px; }
+  .spinner { width:28px; height:28px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .gen-card-label { padding:10px 14px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .preview-wrapper { display:flex; gap:32px; flex-wrap:wrap; }
+  .preview-phone { width:270px; flex-shrink:0; background:#000; border-radius:36px; border:3px solid var(--border); overflow:hidden; aspect-ratio:9/16; }
+  #preview-canvas { width:100%; height:100%; display:block; object-fit:cover; }
+  .preview-controls { flex:1; min-width:240px; }
+  .preview-controls h3 { font-family:var(--font-display); font-size:18px; margin-bottom:16px; }
+  .scene-strip { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; max-height:320px; overflow-y:auto; }
+  .strip-item { display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:13px; }
+  .strip-item.active { border-color:var(--accent); }
+  .strip-thumb { width:32px; height:56px; object-fit:cover; border-radius:4px; background:var(--surface2); flex-shrink:0; }
+  .strip-text { flex:1; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .toast { position:fixed; bottom:28px; right:28px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:14px 20px; font-size:14px; z-index:999; max-width:340px; opacity:0; transform:translateY(10px); transition:opacity .3s,transform .3s; pointer-events:none; }
+  .toast.show { opacity:1; transform:translateY(0); }
+  .toast.toast-ok { border-color:var(--success); color:var(--success); }
+  .toast.toast-err { border-color:var(--danger); color:var(--danger); }
+  .info-box { background:rgba(123,92,250,.08); border:1px solid rgba(123,92,250,.3); border-radius:var(--radius); padding:14px 18px; font-size:13px; color:var(--muted); margin-bottom:24px; }
+  .info-box strong { color:var(--accent2); }
+  .export-steps { display:grid; gap:16px; margin-bottom:28px; }
+  .export-step { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; display:flex; gap:18px; align-items:flex-start; }
+  .export-icon { font-size:28px; flex-shrink:0; margin-top:2px; }
+  .export-step h4 { font-size:15px; font-weight:600; margin-bottom:4px; }
+  .export-step p { font-size:13px; color:var(--muted); }
+  .progress-bar-wrap { background:var(--surface2); border-radius:100px; height:6px; margin:16px 0; overflow:hidden; display:none; }
+  .progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:100px; transition:width .4s; }
+  .token-reminder { background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.3); border-radius:var(--radius); padding:14px 18px; font-size:13px; color:#F87171; margin-bottom:24px; display:none; }
+  @media(max-width:600px){ header{padding:16px 20px;} main{padding:24px 20px;} .steps-nav{padding:0 20px;} .preview-phone{width:200px;} }
 </style>
 </head>
 <body>
@@ -453,70 +101,60 @@
 
 <main>
 
-  <!-- ── PANEL 1: Script ── -->
+  <!-- PANEL 1: Script -->
   <section id="p-script" class="panel active">
     <p class="panel-title">Write your script</p>
-    <p class="panel-sub">Write the full narration for your Short. Keep it under 60 seconds (~150 words is a good target).</p>
-
+    <p class="panel-sub">Write your narration. Keep it under 60 seconds (~150 words). Leave a blank line between each scene.</p>
     <div class="api-box">
       <label>Your Hugging Face API Token</label>
       <input type="password" id="hf-token" placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxx"/>
-      <p>Get yours free at <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co/settings/tokens</a> → New token → Read access. It stays in your browser only.</p>
+      <p>Get yours free at <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co/settings/tokens</a> → New token → Read access.</p>
     </div>
-
     <div class="field">
       <label>Short title</label>
       <input type="text" id="short-title" placeholder="e.g. 5 Facts About Black Holes"/>
     </div>
-
     <div class="field">
       <label>Full narration script</label>
-      <textarea id="script-text" placeholder="Write your full narration here. Each paragraph will become one scene.&#10;&#10;Example:&#10;Did you know black holes can bend time itself?&#10;&#10;The gravity near a black hole is so intense that light cannot escape.&#10;&#10;One day near a black hole equals years on Earth."></textarea>
+      <textarea id="script-text" placeholder="Each paragraph = one scene. Leave a blank line between paragraphs.&#10;&#10;Example:&#10;Did you know space is completely silent?&#10;&#10;The Sun is so large one million Earths fit inside it.&#10;&#10;A day on Venus is longer than a year on Venus."></textarea>
     </div>
-
     <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">
       Word count: <span id="word-count">0</span> · Approx. <span id="dur-est">0s</span>
     </div>
-
     <div class="btn-row">
       <button class="btn btn-primary" id="btn-split-scenes">Split into scenes →</button>
     </div>
   </section>
 
-  <!-- ── PANEL 2: Scenes ── -->
+  <!-- PANEL 2: Scenes -->
   <section id="p-scenes" class="panel">
     <p class="panel-title">Build your scenes</p>
-    <p class="panel-sub">Each scene = one AI-generated image. Edit the narration and the image prompt for each scene.</p>
-
+    <p class="panel-sub">Edit the narration and image prompt for each scene. The image prompt tells the AI what to draw.</p>
     <div class="info-box">
-      <strong>Tip:</strong> The image prompt is what gets sent to the AI. Be specific — describe style, colors, mood. E.g. <em>"dramatic deep space nebula, photorealistic, cinematic lighting"</em>
+      <strong>Tip:</strong> Be specific in image prompts. E.g. <em>"dramatic deep space nebula, photorealistic, cinematic lighting"</em>
     </div>
-
     <div class="scenes-grid" id="scenes-grid"></div>
-
     <button class="btn btn-secondary" id="btn-add-scene">+ Add scene</button>
-
     <div class="btn-row">
       <button class="btn btn-secondary" id="btn-back-script">← Back</button>
       <button class="btn btn-primary" id="btn-go-generate">Generate images →</button>
     </div>
   </section>
 
-  <!-- ── PANEL 3: Generate ── -->
+  <!-- PANEL 3: Generate -->
   <section id="p-generate" class="panel">
     <p class="panel-title">Generate images</p>
-    <p class="panel-sub">Each scene image is generated by Stable Diffusion via Hugging Face. Free tier may take 20–60 seconds per image.</p>
-
-    <div class="info-box">
-      <strong>Model used:</strong> stabilityai/stable-diffusion-xl-base-1.0 · <strong>Note:</strong> Free tier queues may be slow. If an image fails, try regenerating that scene individually.
+    <p class="panel-sub">Images are generated by Stable Diffusion via Hugging Face. Free tier may take 20–60 seconds per image.</p>
+    <div class="token-reminder" id="token-reminder">
+      ⚠️ Your Hugging Face token is missing! Go back to Step 1 and enter it before generating.
     </div>
-
+    <div class="info-box">
+      <strong>Model:</strong> stabilityai/stable-diffusion-xl-base-1.0 &nbsp;·&nbsp; If an image fails, click Retry on that scene.
+    </div>
     <div class="progress-bar-wrap" id="gen-progress-wrap">
       <div class="progress-bar-fill" id="gen-progress-fill" style="width:0%"></div>
     </div>
-
     <div class="generate-grid" id="generate-grid"></div>
-
     <div class="btn-row">
       <button class="btn btn-secondary" id="btn-back-scenes">← Back</button>
       <button class="btn btn-primary" id="btn-gen-all">Generate all images</button>
@@ -524,11 +162,10 @@
     </div>
   </section>
 
-  <!-- ── PANEL 4: Preview ── -->
+  <!-- PANEL 4: Preview -->
   <section id="p-preview" class="panel">
     <p class="panel-title">Preview your Short</p>
-    <p class="panel-sub">Watch your scenes with Ken Burns animation and voiceover.</p>
-
+    <p class="panel-sub">Watch your scenes with Ken Burns animation and browser voiceover.</p>
     <div class="preview-wrapper">
       <div class="preview-phone">
         <img id="preview-canvas" src="" alt="Preview"/>
@@ -537,7 +174,7 @@
         <h3>Scenes</h3>
         <div class="scene-strip" id="scene-strip"></div>
         <button class="btn btn-primary" id="btn-play-preview">▶ Play with voiceover</button>
-        <p style="font-size:12px;color:var(--muted);margin-top:12px;">Voiceover uses your browser's built-in text-to-speech (Web Speech API). No account needed.</p>
+        <p style="font-size:12px;color:var(--muted);margin-top:12px;">Uses your browser's built-in text-to-speech. Works best in Chrome.</p>
         <div class="btn-row" style="margin-top:24px;">
           <button class="btn btn-secondary" id="btn-back-gen">← Back</button>
           <button class="btn btn-success" id="btn-go-export">Export guide →</button>
@@ -546,51 +183,46 @@
     </div>
   </section>
 
-  <!-- ── PANEL 5: Export ── -->
+  <!-- PANEL 5: Export -->
   <section id="p-export" class="panel">
     <p class="panel-title">Export your Short</p>
     <p class="panel-sub">Download your assets and assemble in a free video editor.</p>
-
     <div class="export-steps">
       <div class="export-step">
         <div class="export-icon">🖼️</div>
         <div>
           <h4>Download all scene images</h4>
-          <p>Save each generated image as a PNG. These are your video frames.</p>
+          <p>Save each generated image. These are your video frames.</p>
           <div class="btn-row" style="margin-top:12px;">
             <button class="btn btn-secondary" id="btn-download-all">Download all images</button>
           </div>
         </div>
       </div>
-
       <div class="export-step">
         <div class="export-icon">📝</div>
         <div>
           <h4>Download your script</h4>
-          <p>Save the narration text to record voiceover or import into a TTS tool.</p>
+          <p>Save the narration to record voiceover or import into a TTS tool.</p>
           <div class="btn-row" style="margin-top:12px;">
             <button class="btn btn-secondary" id="btn-download-script">Download script .txt</button>
           </div>
         </div>
       </div>
-
       <div class="export-step">
         <div class="export-icon">🎬</div>
         <div>
           <h4>Assemble in CapCut (free)</h4>
-          <p>Import your images into <strong>CapCut</strong> (free, capcut.com), add your voiceover, apply Ken Burns zoom effect per clip, export at 1080×1920 for YouTube Shorts.</p>
+          <p>Import images into <strong>CapCut</strong> (free at capcut.com), add voiceover, apply Ken Burns zoom per clip, export at 1080×1920 for YouTube Shorts.</p>
         </div>
       </div>
-
       <div class="export-step">
         <div class="export-icon">📤</div>
         <div>
           <h4>Upload to YouTube Shorts</h4>
-          <p>Upload your video, add #Shorts in the title, set vertical format. YouTube will automatically list it as a Short.</p>
+          <p>Upload your video, add #Shorts in the title. YouTube will automatically list it as a Short.</p>
         </div>
       </div>
     </div>
-
     <button class="btn btn-primary" id="btn-start-over">Start a new Short</button>
   </section>
 
@@ -599,92 +231,98 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ── State ──────────────────────────────────────────────────
-const state = {
+// ── Global token store — persists across tab switches ──
+const APP = {
   token: '',
   title: '',
   script: '',
-  scenes: [],   // { narration, prompt, imageUrl, imageBlob }
+  scenes: [],
   currentPreviewIdx: 0,
-  speechPlaying: false,
 };
 
-// ── Helpers ────────────────────────────────────────────────
-function $(id) { return document.getElementById(id); }
+function $(id){ return document.getElementById(id); }
 
-function toast(msg, type = 'ok') {
-  const el = $('toast');
-  el.textContent = msg;
-  el.className = `toast toast-${type} show`;
+function toast(msg, type='ok'){
+  const el=$('toast');
+  el.textContent=msg;
+  el.className=`toast toast-${type} show`;
   clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 3500);
+  el._t=setTimeout(()=>el.classList.remove('show'),3500);
 }
 
-function setTab(panelId) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.step-tab').forEach(t => t.classList.remove('active'));
+// ── Save token immediately on any input ──
+$('hf-token').addEventListener('input', e => {
+  APP.token = e.target.value.trim();
+});
+
+// ── Tab navigation ──
+document.querySelectorAll('.step-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.step-tab').forEach(t=>t.classList.remove('active'));
+    $(btn.dataset.panel).classList.add('active');
+    btn.classList.add('active');
+    // Show token reminder on generate tab if token missing
+    if(btn.dataset.panel === 'p-generate'){
+      $('token-reminder').style.display = APP.token ? 'none' : 'block';
+    }
+  });
+});
+
+// ── Word count ──
+$('script-text').addEventListener('input', updateWordCount);
+function updateWordCount(){
+  const words=$('script-text').value.trim().split(/\s+/).filter(Boolean).length;
+  $('word-count').textContent=words;
+  $('dur-est').textContent=Math.round(words/2.5)+'s';
+}
+
+// ── Step 1: Split into scenes ──
+$('btn-split-scenes').addEventListener('click', ()=>{
+  const token = $('hf-token').value.trim();
+  const script = $('script-text').value.trim();
+  if(!token){ toast('Please enter your Hugging Face token first.','err'); return; }
+  if(!script){ toast('Please write your script first.','err'); return; }
+  APP.token = token;
+  APP.title = $('short-title').value.trim() || 'My Short';
+  APP.script = script;
+  const paragraphs = script.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+  APP.scenes = paragraphs.map(p=>({ narration:p, prompt:autoPrompt(p), imageUrl:null, imageBlob:null }));
+  renderScenes();
+  switchTab('p-scenes');
+  toast(`Split into ${APP.scenes.length} scene(s) ✓`,'ok');
+});
+
+function autoPrompt(text){
+  const words=text.split(' ').slice(0,10).join(' ');
+  return `${words}, cinematic lighting, ultra detailed, photorealistic, vertical 9:16`;
+}
+
+function switchTab(panelId){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.step-tab').forEach(t=>t.classList.remove('active'));
   $(panelId).classList.add('active');
   document.querySelector(`[data-panel="${panelId}"]`).classList.add('active');
+  if(panelId==='p-generate'){
+    $('token-reminder').style.display = APP.token ? 'none' : 'block';
+  }
 }
 
-// ── Step tab clicks ────────────────────────────────────────
-document.querySelectorAll('.step-tab').forEach(btn => {
-  btn.addEventListener('click', () => setTab(btn.dataset.panel));
-});
-
-// ── Panel 1: Script ────────────────────────────────────────
-const scriptTA = $('script-text');
-scriptTA.addEventListener('input', updateWordCount);
-
-function updateWordCount() {
-  const words = scriptTA.value.trim().split(/\s+/).filter(Boolean).length;
-  $('word-count').textContent = words;
-  $('dur-est').textContent = Math.round(words / 2.5) + 's';
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-$('btn-split-scenes').addEventListener('click', () => {
-  const token = $('hf-token').value.trim();
-  const title = $('short-title').value.trim();
-  const script = scriptTA.value.trim();
-
-  if (!token) { toast('Please enter your Hugging Face token first.', 'err'); return; }
-  if (!script) { toast('Please write your script first.', 'err'); return; }
-
-  state.token = token;
-  state.title = title || 'My Short';
-  state.script = script;
-
-  // Split by blank lines (paragraphs = scenes)
-  const paragraphs = script.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
-  state.scenes = paragraphs.map(p => ({
-    narration: p,
-    prompt: autoPrompt(p),
-    imageUrl: null,
-    imageBlob: null,
-  }));
-
-  renderScenes();
-  setTab('p-scenes');
-  toast(`Split into ${state.scenes.length} scene${state.scenes.length > 1 ? 's' : ''}.`, 'ok');
-});
-
-function autoPrompt(text) {
-  // Basic auto-prompt: take first ~10 words + style suffix
-  const words = text.split(' ').slice(0, 10).join(' ');
-  return `${words}, cinematic lighting, ultra detailed, photorealistic, vertical composition 9:16`;
-}
-
-// ── Panel 2: Scenes ────────────────────────────────────────
-function renderScenes() {
-  const grid = $('scenes-grid');
-  grid.innerHTML = '';
-  state.scenes.forEach((scene, i) => {
-    const card = document.createElement('div');
-    card.className = 'scene-card';
-    card.innerHTML = `
+// ── Step 2: Scenes ──
+function renderScenes(){
+  const grid=$('scenes-grid');
+  grid.innerHTML='';
+  APP.scenes.forEach((scene,i)=>{
+    const card=document.createElement('div');
+    card.className='scene-card';
+    card.innerHTML=`
       <div class="scene-card-header">
-        <span class="scene-num">Scene ${i + 1}</span>
-        <button class="scene-remove" data-i="${i}" title="Remove scene">×</button>
+        <span class="scene-num">Scene ${i+1}</span>
+        <button class="scene-remove" data-i="${i}">×</button>
       </div>
       <label>Narration</label>
       <textarea data-field="narration" data-i="${i}">${escHtml(scene.narration)}</textarea>
@@ -693,246 +331,189 @@ function renderScenes() {
     `;
     grid.appendChild(card);
   });
-
-  // Live update state on edit
-  grid.querySelectorAll('textarea, input').forEach(el => {
-    el.addEventListener('input', () => {
-      state.scenes[+el.dataset.i][el.dataset.field] = el.value;
-    });
+  grid.querySelectorAll('textarea,input').forEach(el=>{
+    el.addEventListener('input',()=>{ APP.scenes[+el.dataset.i][el.dataset.field]=el.value; });
   });
-
-  // Remove buttons
-  grid.querySelectorAll('.scene-remove').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.scenes.splice(+btn.dataset.i, 1);
-      renderScenes();
-    });
+  grid.querySelectorAll('.scene-remove').forEach(btn=>{
+    btn.addEventListener('click',()=>{ APP.scenes.splice(+btn.dataset.i,1); renderScenes(); });
   });
 }
 
-$('btn-add-scene').addEventListener('click', () => {
-  state.scenes.push({ narration: '', prompt: '', imageUrl: null, imageBlob: null });
+$('btn-add-scene').addEventListener('click',()=>{
+  APP.scenes.push({narration:'',prompt:'',imageUrl:null,imageBlob:null});
   renderScenes();
 });
-
-$('btn-back-script').addEventListener('click', () => setTab('p-script'));
-$('btn-go-generate').addEventListener('click', () => {
-  if (state.scenes.length === 0) { toast('Add at least one scene.', 'err'); return; }
+$('btn-back-script').addEventListener('click',()=>switchTab('p-script'));
+$('btn-go-generate').addEventListener('click',()=>{
+  if(!APP.scenes.length){ toast('Add at least one scene.','err'); return; }
   renderGenerateGrid();
-  setTab('p-generate');
+  switchTab('p-generate');
 });
 
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── Panel 3: Generate ──────────────────────────────────────
-function renderGenerateGrid() {
-  const grid = $('generate-grid');
-  grid.innerHTML = '';
-  state.scenes.forEach((scene, i) => {
-    const card = document.createElement('div');
-    card.className = 'gen-card';
-    card.id = `gen-card-${i}`;
-    card.innerHTML = `
+// ── Step 3: Generate ──
+function renderGenerateGrid(){
+  const grid=$('generate-grid');
+  grid.innerHTML='';
+  APP.scenes.forEach((scene,i)=>{
+    const card=document.createElement('div');
+    card.className='gen-card';
+    card.id=`gen-card-${i}`;
+    card.innerHTML=`
       <div class="gen-card-placeholder" id="gen-ph-${i}">
         <span style="font-size:32px">🎨</span>
         <span>Not generated yet</span>
         <button class="btn btn-secondary" style="font-size:12px;padding:8px 14px;" onclick="generateScene(${i})">Generate</button>
       </div>
       <img class="gen-card-img" id="gen-img-${i}" src="" alt="Scene ${i+1}" style="display:none"/>
-      <div class="gen-card-label">Scene ${i+1}: ${escHtml(scene.prompt.slice(0,60))}…</div>
+      <div class="gen-card-label">Scene ${i+1}: ${escHtml((scene.prompt||'').slice(0,55))}…</div>
     `;
     grid.appendChild(card);
   });
-  $('btn-go-preview').disabled = true;
+  $('btn-go-preview').disabled=true;
 }
 
-$('btn-back-scenes').addEventListener('click', () => setTab('p-scenes'));
+$('btn-back-scenes').addEventListener('click',()=>switchTab('p-scenes'));
 
-$('btn-gen-all').addEventListener('click', async () => {
-  $('btn-gen-all').disabled = true;
-  const wrap = $('gen-progress-wrap');
-  wrap.style.display = 'block';
-  let done = 0;
-
-  for (let i = 0; i < state.scenes.length; i++) {
+$('btn-gen-all').addEventListener('click', async ()=>{
+  if(!APP.token){ toast('Token missing! Go back to Step 1 and enter your token.','err'); return; }
+  $('btn-gen-all').disabled=true;
+  $('gen-progress-wrap').style.display='block';
+  let done=0;
+  for(let i=0;i<APP.scenes.length;i++){
     await generateScene(i);
     done++;
-    $('gen-progress-fill').style.width = `${(done / state.scenes.length) * 100}%`;
+    $('gen-progress-fill').style.width=`${(done/APP.scenes.length)*100}%`;
   }
-  $('btn-gen-all').disabled = false;
+  $('btn-gen-all').disabled=false;
   checkAllGenerated();
 });
 
-async function generateScene(i) {
-  const scene = state.scenes[i];
-  const ph = $(`gen-ph-${i}`);
-  const img = $(`gen-img-${i}`);
-
-  // Show spinner
-  ph.innerHTML = `<div class="spinner"></div><span style="font-size:12px">Generating…</span>`;
-  ph.style.display = 'flex';
-  img.style.display = 'none';
-
-  try {
-    const response = await fetch(
+window.generateScene = async function(i){
+  if(!APP.token){ toast('Token missing! Go back to Step 1 first.','err'); return; }
+  const scene=APP.scenes[i];
+  const ph=$(`gen-ph-${i}`);
+  const img=$(`gen-img-${i}`);
+  ph.innerHTML=`<div class="spinner"></div><span style="font-size:12px">Generating… (up to 60s)</span>`;
+  ph.style.display='flex';
+  img.style.display='none';
+  try{
+    const response=await fetch(
       'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
       {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${state.token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ inputs: scene.prompt }),
+        method:'POST',
+        headers:{ 'Authorization':`Bearer ${APP.token}`, 'Content-Type':'application/json' },
+        body:JSON.stringify({ inputs: scene.prompt }),
       }
     );
-
-    if (!response.ok) {
-      const err = await response.text();
+    if(!response.ok){
+      const err=await response.text();
       throw new Error(`API error ${response.status}: ${err.slice(0,120)}`);
     }
-
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    state.scenes[i].imageUrl = url;
-    state.scenes[i].imageBlob = blob;
-
-    img.src = url;
-    img.style.display = 'block';
-    ph.style.display = 'none';
-
-    toast(`Scene ${i + 1} generated ✓`, 'ok');
+    const blob=await response.blob();
+    const url=URL.createObjectURL(blob);
+    APP.scenes[i].imageUrl=url;
+    APP.scenes[i].imageBlob=blob;
+    img.src=url;
+    img.style.display='block';
+    ph.style.display='none';
+    toast(`Scene ${i+1} done ✓`,'ok');
     checkAllGenerated();
-
-  } catch (e) {
-    ph.innerHTML = `<span style="font-size:28px">⚠️</span><span style="font-size:12px;color:var(--danger);text-align:center;padding:0 12px">${e.message}</span><button class="btn btn-secondary" style="font-size:12px;padding:8px 14px;margin-top:8px" onclick="generateScene(${i})">Retry</button>`;
-    toast(`Scene ${i + 1} failed. Check token or try again.`, 'err');
+  }catch(e){
+    ph.innerHTML=`<span style="font-size:24px">⚠️</span><span style="font-size:12px;color:var(--danger);text-align:center;padding:0 12px">${escHtml(e.message)}</span><button class="btn btn-secondary" style="font-size:12px;padding:8px 14px;margin-top:8px" onclick="generateScene(${i})">Retry</button>`;
+    toast(`Scene ${i+1} failed. Check your token.`,'err');
   }
+};
+
+function checkAllGenerated(){
+  const allDone=APP.scenes.every(s=>s.imageUrl);
+  $('btn-go-preview').disabled=!allDone;
 }
 
-function checkAllGenerated() {
-  const allDone = state.scenes.every(s => s.imageUrl);
-  $('btn-go-preview').disabled = !allDone;
-}
+$('btn-go-preview').addEventListener('click',()=>{ renderPreview(); switchTab('p-preview'); });
 
-$('btn-go-preview').addEventListener('click', () => {
-  renderPreview();
-  setTab('p-preview');
-});
-
-// ── Panel 4: Preview ───────────────────────────────────────
-function renderPreview() {
-  const strip = $('scene-strip');
-  strip.innerHTML = '';
-  state.scenes.forEach((scene, i) => {
-    const item = document.createElement('div');
-    item.className = 'strip-item' + (i === 0 ? ' active' : '');
-    item.innerHTML = `
-      <img class="strip-thumb" src="${scene.imageUrl}" alt="Scene ${i+1}"/>
-      <span class="strip-text">Scene ${i+1}: ${escHtml(scene.narration.slice(0,60))}</span>
-    `;
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.strip-item').forEach(x => x.classList.remove('active'));
+// ── Step 4: Preview ──
+function renderPreview(){
+  const strip=$('scene-strip');
+  strip.innerHTML='';
+  APP.scenes.forEach((scene,i)=>{
+    const item=document.createElement('div');
+    item.className='strip-item'+(i===0?' active':'');
+    item.innerHTML=`<img class="strip-thumb" src="${scene.imageUrl}" alt="Scene ${i+1}"/><span class="strip-text">Scene ${i+1}: ${escHtml(scene.narration.slice(0,60))}</span>`;
+    item.addEventListener('click',()=>{
+      document.querySelectorAll('.strip-item').forEach(x=>x.classList.remove('active'));
       item.classList.add('active');
       showPreviewScene(i);
     });
     strip.appendChild(item);
   });
-
   showPreviewScene(0);
 }
 
-function showPreviewScene(i) {
-  state.currentPreviewIdx = i;
-  const canvas = $('preview-canvas');
-  canvas.src = state.scenes[i].imageUrl;
-  // Ken Burns effect via CSS animation
-  canvas.style.animation = 'none';
-  void canvas.offsetWidth; // reflow
-  canvas.style.animation = 'kenburns 5s ease-in-out forwards';
+function showPreviewScene(i){
+  APP.currentPreviewIdx=i;
+  const canvas=$('preview-canvas');
+  canvas.src=APP.scenes[i].imageUrl;
+  canvas.style.animation='none';
+  void canvas.offsetWidth;
+  canvas.style.animation='kenburns 5s ease-in-out forwards';
 }
 
-// Inject Ken Burns keyframe
-const kbStyle = document.createElement('style');
-kbStyle.textContent = `
-@keyframes kenburns {
-  0%   { transform: scale(1)    translate(0, 0); }
-  100% { transform: scale(1.12) translate(-2%, -2%); }
-}`;
+const kbStyle=document.createElement('style');
+kbStyle.textContent=`@keyframes kenburns{0%{transform:scale(1) translate(0,0);}100%{transform:scale(1.12) translate(-2%,-2%);}}`;
 document.head.appendChild(kbStyle);
 
-$('btn-play-preview').addEventListener('click', () => {
-  if (!('speechSynthesis' in window)) {
-    toast('Your browser does not support text-to-speech. Try Chrome or Edge.', 'err');
-    return;
-  }
+$('btn-play-preview').addEventListener('click',()=>{
+  if(!('speechSynthesis' in window)){ toast('Text-to-speech not supported. Try Chrome or Edge.','err'); return; }
   window.speechSynthesis.cancel();
   playSceneVoiceover(0);
 });
 
-function playSceneVoiceover(i) {
-  if (i >= state.scenes.length) return;
-
-  // Highlight in strip
-  document.querySelectorAll('.strip-item').forEach((x, idx) => {
-    x.classList.toggle('active', idx === i);
-  });
+function playSceneVoiceover(i){
+  if(i>=APP.scenes.length) return;
+  document.querySelectorAll('.strip-item').forEach((x,idx)=>x.classList.toggle('active',idx===i));
   showPreviewScene(i);
-
-  const utt = new SpeechSynthesisUtterance(state.scenes[i].narration);
-  utt.rate = 0.95;
-  utt.pitch = 1.0;
-  utt.onend = () => playSceneVoiceover(i + 1);
+  const utt=new SpeechSynthesisUtterance(APP.scenes[i].narration);
+  utt.rate=0.95;
+  utt.onend=()=>playSceneVoiceover(i+1);
   window.speechSynthesis.speak(utt);
 }
 
-$('btn-back-gen').addEventListener('click', () => {
-  window.speechSynthesis.cancel();
-  setTab('p-generate');
-});
-$('btn-go-export').addEventListener('click', () => {
-  window.speechSynthesis.cancel();
-  setTab('p-export');
-});
+$('btn-back-gen').addEventListener('click',()=>{ window.speechSynthesis.cancel(); switchTab('p-generate'); });
+$('btn-go-export').addEventListener('click',()=>{ window.speechSynthesis.cancel(); switchTab('p-export'); });
 
-// ── Panel 5: Export ────────────────────────────────────────
-$('btn-download-all').addEventListener('click', () => {
-  state.scenes.forEach((scene, i) => {
-    if (!scene.imageBlob) return;
-    const a = document.createElement('a');
-    a.href = scene.imageUrl;
-    a.download = `scene-${String(i+1).padStart(2,'0')}.png`;
+// ── Step 5: Export ──
+$('btn-download-all').addEventListener('click',()=>{
+  APP.scenes.forEach((scene,i)=>{
+    if(!scene.imageBlob) return;
+    const a=document.createElement('a');
+    a.href=scene.imageUrl;
+    a.download=`scene-${String(i+1).padStart(2,'0')}.png`;
     a.click();
   });
-  toast('Downloading images…', 'ok');
+  toast('Downloading images…','ok');
 });
 
-$('btn-download-script').addEventListener('click', () => {
-  const lines = [`${state.title}\n${'─'.repeat(40)}\n`];
-  state.scenes.forEach((s, i) => {
-    lines.push(`[Scene ${i+1}]\n${s.narration}\n`);
-  });
-  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `${state.title.replace(/\s+/g,'-').toLowerCase()}-script.txt`;
+$('btn-download-script').addEventListener('click',()=>{
+  const lines=[`${APP.title}\n${'─'.repeat(40)}\n`];
+  APP.scenes.forEach((s,i)=>lines.push(`[Scene ${i+1}]\n${s.narration}\n`));
+  const blob=new Blob([lines.join('\n')],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`${APP.title.replace(/\s+/g,'-').toLowerCase()}-script.txt`;
   a.click();
-  toast('Script downloaded.', 'ok');
+  toast('Script downloaded.','ok');
 });
 
-$('btn-start-over').addEventListener('click', () => {
-  if (!confirm('Start a new Short? Your current work will be lost.')) return;
+$('btn-start-over').addEventListener('click',()=>{
+  if(!confirm('Start a new Short? Current work will be lost.')) return;
   window.speechSynthesis.cancel();
-  Object.assign(state, { token: '', title: '', script: '', scenes: [], currentPreviewIdx: 0 });
-  $('script-text').value = '';
-  $('short-title').value = '';
+  Object.assign(APP,{token:'',title:'',script:'',scenes:[],currentPreviewIdx:0});
+  $('script-text').value='';
+  $('short-title').value='';
+  $('hf-token').value='';
   updateWordCount();
-  setTab('p-script');
+  switchTab('p-script');
 });
-
-// Persist token across tab switches
-$('hf-token').addEventListener('input', e => state.token = e.target.value.trim());
 
 updateWordCount();
 </script>
