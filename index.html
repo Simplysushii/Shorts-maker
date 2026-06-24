@@ -166,6 +166,51 @@
       <strong>🚀 Space style:</strong> deep space photography, NASA aesthetic, dark cosmic background, nebula colors purple and blue, cinematic, photorealistic, 8K
     </div>
 
+    <!-- Character Library — only shows for Kids channel -->
+    <div id="character-lock-box" style="display:none;margin-bottom:24px;">
+
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:22px;">🎭</span>
+          <strong style="font-size:16px;">Character Library</strong>
+          <span style="font-size:12px;color:var(--muted);">— pick who appears in this story</span>
+        </div>
+        <button class="btn btn-secondary" id="btn-show-add-char" style="font-size:13px;padding:8px 16px;">+ Create character</button>
+      </div>
+
+      <!-- Add character form — hidden by default -->
+      <div id="add-char-form" style="display:none;background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius);padding:20px;margin-bottom:16px;">
+        <p style="font-weight:700;font-size:14px;margin-bottom:14px;color:var(--accent2);">New Character</p>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:11px;">Character name</label>
+          <input type="text" id="char-name-input" placeholder="e.g. Benny, Mia, Leo..."/>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:11px;">Emoji (optional)</label>
+          <input type="text" id="char-emoji-input" placeholder="🐰" style="max-width:80px;"/>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="font-size:11px;">Visual description (be as detailed as possible)</label>
+          <textarea id="char-desc-input" style="min-height:100px;font-size:13px;" placeholder="e.g. Small fluffy white rabbit, big expressive blue eyes, rosy cheeks, wearing a tiny blue sweater, Pixar 3D style, soft warm lighting, cheerful expression"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary" id="btn-save-char" style="font-size:13px;padding:8px 20px;">Save character</button>
+          <button class="btn btn-secondary" id="btn-cancel-char" style="font-size:13px;padding:8px 16px;">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Character cards list -->
+      <div id="char-library-list"></div>
+
+      <!-- Active characters for this story -->
+      <div id="active-chars-box" style="display:none;margin-top:16px;background:rgba(34,211,160,.08);border:1px solid rgba(34,211,160,.4);border-radius:var(--radius);padding:14px 18px;">
+        <p style="font-size:13px;font-weight:700;color:var(--success);margin-bottom:8px;">✅ Characters in this story:</p>
+        <div id="active-chars-list" style="font-size:13px;color:var(--muted);"></div>
+      </div>
+
+    </div>
+
     <div class="field">
       <label>Short title</label>
       <input type="text" id="short-title" placeholder="e.g. 5 Amazing Facts About Black Holes"/>
@@ -337,8 +382,10 @@ const CHANNELS = {
   },
   kids: {
     label: '🧒 Kids Channel',
-    style: 'bright colorful cartoon, Pixar style 3D animation, friendly cute characters, soft warm lighting, cheerful happy mood, clean simple background',
-    note: 'All images will look like Pixar 3D cartoons — bright, colorful, and friendly.'
+    style: 'bright colorful, Pixar 3D style, soft warm lighting, cheerful happy mood, clean simple background, ultra detailed',
+    note: 'All images will feature Benny and Mia in Pixar 3D style — bright, colorful, and consistent.',
+    characters: 'Benny a small fluffy white rabbit with big expressive blue eyes rosy cheeks wearing a tiny blue sweater, and Mia a tiny brown mouse with big round brown eyes wearing a little pink dress with a bow, both Pixar 3D style characters, ultra detailed, soft warm lighting, cheerful expressions',
+    characterNote: '🐰 Benny & 🐭 Mia are locked into every scene for consistency.'
   },
   history: {
     label: '📜 History Facts',
@@ -347,7 +394,7 @@ const CHANNELS = {
   }
 };
 
-const APP = { channel:'space', title:'', script:'', scenes:[] };
+const APP = { channel:'space', title:'', script:'', scenes:[], activeChars:[] };
 
 function $(id){ return document.getElementById(id); }
 
@@ -378,7 +425,130 @@ document.querySelectorAll('.channel-card').forEach(card=>{
     APP.channel = card.dataset.channel;
     const ch = CHANNELS[APP.channel];
     $('style-preview').innerHTML = `<strong>${ch.label} style:</strong> ${ch.style}`;
+    const charBox = $('character-lock-box');
+    if(APP.channel === 'kids'){
+      charBox.style.display = 'block';
+      renderCharLibrary();
+    } else {
+      charBox.style.display = 'none';
+    }
   });
+});
+
+// ── Character Library ──
+// Load saved characters from localStorage
+function loadChars(){
+  try { return JSON.parse(localStorage.getItem('shorts_characters')||'[]'); }
+  catch(e){ return []; }
+}
+function saveChars(chars){
+  localStorage.setItem('shorts_characters', JSON.stringify(chars));
+}
+
+// Render all character cards
+function renderCharLibrary(){
+  const chars = loadChars();
+  const list = $('char-library-list');
+  const activeBox = $('active-chars-box');
+  const activeList = $('active-chars-list');
+
+  if(chars.length === 0){
+    list.innerHTML = `<p style="font-size:13px;color:var(--muted);padding:12px 0;">No characters yet. Click "+ Create character" to add your first one!</p>`;
+    activeBox.style.display = 'none';
+    return;
+  }
+
+  list.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:12px;';
+
+  chars.forEach((char, i) => {
+    const card = document.createElement('div');
+    const isActive = APP.activeChars.includes(i);
+    card.style.cssText = `background:var(--surface);border:2px solid ${isActive ? 'var(--success)' : 'var(--border)'};border-radius:var(--radius);padding:14px 16px;cursor:pointer;transition:border-color .2s;position:relative;`;
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="font-size:24px;">${char.emoji||'🎭'}</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:14px;">${escHtml(char.name)}</div>
+          <div style="font-size:11px;color:${isActive ? 'var(--success)' : 'var(--muted)'};">${isActive ? '✅ In this story' : 'Click to use in story'}</div>
+        </div>
+        <button data-del="${i}" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px;" title="Delete character">🗑️</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;">${escHtml(char.description.slice(0,100))}${char.description.length>100?'…':''}</div>
+    `;
+
+    // Toggle active on click
+    card.addEventListener('click', (e) => {
+      if(e.target.dataset.del !== undefined) return;
+      const idx = APP.activeChars.indexOf(i);
+      if(idx === -1){ APP.activeChars.push(i); }
+      else { APP.activeChars.splice(idx, 1); }
+      renderCharLibrary();
+    });
+
+    // Delete button
+    card.querySelector('[data-del]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(!confirm(`Delete "${char.name}"? This cannot be undone.`)) return;
+      const all = loadChars();
+      all.splice(i, 1);
+      saveChars(all);
+      APP.activeChars = APP.activeChars.filter(x => x !== i).map(x => x > i ? x-1 : x);
+      renderCharLibrary();
+      toast(`${char.name} deleted.`, 'ok');
+    });
+
+    grid.appendChild(card);
+  });
+
+  list.appendChild(grid);
+
+  // Show active characters summary
+  const activeNames = APP.activeChars.map(i => {
+    const c = chars[i];
+    return c ? `${c.emoji||'🎭'} ${c.name}` : '';
+  }).filter(Boolean);
+
+  if(activeNames.length > 0){
+    activeBox.style.display = 'block';
+    activeList.innerHTML = activeNames.join(' &nbsp;·&nbsp; ');
+  } else {
+    activeBox.style.display = 'none';
+  }
+}
+
+// Show/hide add form
+$('btn-show-add-char').addEventListener('click', () => {
+  $('add-char-form').style.display = 'block';
+  $('btn-show-add-char').style.display = 'none';
+  $('char-name-input').focus();
+});
+
+$('btn-cancel-char').addEventListener('click', () => {
+  $('add-char-form').style.display = 'none';
+  $('btn-show-add-char').style.display = 'inline-flex';
+  $('char-name-input').value = '';
+  $('char-emoji-input').value = '';
+  $('char-desc-input').value = '';
+});
+
+$('btn-save-char').addEventListener('click', () => {
+  const name = $('char-name-input').value.trim();
+  const emoji = $('char-emoji-input').value.trim();
+  const description = $('char-desc-input').value.trim();
+  if(!name){ toast('Please enter a character name.', 'err'); return; }
+  if(!description){ toast('Please enter a description.', 'err'); return; }
+  const chars = loadChars();
+  chars.push({ name, emoji: emoji||'🎭', description });
+  saveChars(chars);
+  $('add-char-form').style.display = 'none';
+  $('btn-show-add-char').style.display = 'inline-flex';
+  $('char-name-input').value = '';
+  $('char-emoji-input').value = '';
+  $('char-desc-input').value = '';
+  renderCharLibrary();
+  toast(`${name} saved to your character library! ✓`, 'ok');
 });
 
 // ── Word count ──
@@ -393,10 +563,20 @@ function escHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// Build prompt = scene description + channel style
+// Build prompt = scene description + channel style + active characters if kids
 function buildPrompt(narration){
   const subject = narration.split(' ').slice(0,10).join(' ');
-  return `${subject}, ${CHANNELS[APP.channel].style}`;
+  const ch = CHANNELS[APP.channel];
+  if(APP.channel === 'kids' && APP.activeChars.length > 0){
+    const chars = loadChars();
+    const charDescs = APP.activeChars
+      .map(i => chars[i])
+      .filter(Boolean)
+      .map(c => `${c.name}: ${c.description}`)
+      .join('; ');
+    return `${subject}, featuring ${charDescs}, ${ch.style}`;
+  }
+  return `${subject}, ${ch.style}`;
 }
 
 // Build Pollinations URL
@@ -415,7 +595,15 @@ $('btn-split-scenes').addEventListener('click',()=>{
   const paragraphs=script.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
   APP.scenes=paragraphs.map(p=>({ narration:p, prompt:buildPrompt(p), imageUrl:null }));
   const ch=CHANNELS[APP.channel];
-  $('scenes-style-note').innerHTML=`<strong>${ch.label}:</strong> ${ch.note} Style has been added to all prompts below.`;
+  let noteHtml = `<strong>${ch.label}:</strong> ${ch.note} Style has been added to all prompts below.`;
+  if(APP.channel === 'kids' && APP.activeChars.length > 0){
+    const chars = loadChars();
+    const names = APP.activeChars.map(i => chars[i]).filter(Boolean).map(c=>`${c.emoji||'🎭'} ${c.name}`).join(', ');
+    noteHtml += `<br><br><strong>🎭 Characters in this story:</strong> ${names} — included in every image prompt automatically.`;
+  } else if(APP.channel === 'kids' && APP.activeChars.length === 0){
+    noteHtml += `<br><br><strong style="color:var(--accent2);">💡 Tip:</strong> Go back to Step 1 and select characters from your library to include them in the images.`;
+  }
+  $('scenes-style-note').innerHTML = noteHtml;
   renderScenes();
   switchTab('p-scenes');
   toast(`${APP.scenes.length} scenes created with ${ch.label} style ✓`,'ok');
@@ -595,7 +783,7 @@ $('btn-download-script').addEventListener('click',()=>{
 
 $('btn-start-over').addEventListener('click',()=>{
   if(!confirm('Start a new Short? Current work will be lost.')) return;
-  Object.assign(APP,{channel:'space',title:'',script:'',scenes:[]});
+  Object.assign(APP,{channel:'space',title:'',script:'',scenes:[],activeChars:[]});
   $('script-text').value='';
   $('short-title').value='';
   document.querySelectorAll('.channel-card').forEach(c=>c.classList.remove('selected'));
