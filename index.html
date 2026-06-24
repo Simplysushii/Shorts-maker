@@ -445,6 +445,19 @@ function saveChars(chars){
   localStorage.setItem('shorts_characters', JSON.stringify(chars));
 }
 
+// Migrate existing characters — assign seeds if they don't have one yet
+(function migrateChars(){
+  const chars = loadChars();
+  let changed = false;
+  chars.forEach(c => {
+    if(!c.seed){
+      c.seed = Math.floor(Math.random()*99999) + 100000;
+      changed = true;
+    }
+  });
+  if(changed) saveChars(chars);
+})();
+
 // Render all character cards
 function renderCharLibrary(){
   const chars = loadChars();
@@ -475,7 +488,11 @@ function renderCharLibrary(){
         </div>
         <button data-del="${i}" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px;" title="Delete character">🗑️</button>
       </div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.5;">${escHtml(char.description.slice(0,100))}${char.description.length>100?'…':''}</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px;">${escHtml(char.description.slice(0,100))}${char.description.length>100?'…':''}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+        <span style="font-size:11px;color:var(--muted);">🎲 Seed: <code style="color:var(--accent2);">${char.seed||'none'}</code></span>
+        <button data-reseed="${i}" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:11px;padding:3px 8px;border-radius:6px;" title="Generate new look">🔄 New look</button>
+      </div>
     `;
 
     // Toggle active on click
@@ -497,6 +514,16 @@ function renderCharLibrary(){
       APP.activeChars = APP.activeChars.filter(x => x !== i).map(x => x > i ? x-1 : x);
       renderCharLibrary();
       toast(`${char.name} deleted.`, 'ok');
+    });
+
+    // Reseed button — generates a new look for the character
+    card.querySelector('[data-reseed]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const all = loadChars();
+      all[i].seed = Math.floor(Math.random()*99999) + 100000;
+      saveChars(all);
+      renderCharLibrary();
+      toast(`${char.name} will have a new consistent look next time you generate! ✓`, 'ok');
     });
 
     grid.appendChild(card);
@@ -540,7 +567,9 @@ $('btn-save-char').addEventListener('click', () => {
   if(!name){ toast('Please enter a character name.', 'err'); return; }
   if(!description){ toast('Please enter a description.', 'err'); return; }
   const chars = loadChars();
-  chars.push({ name, emoji: emoji||'🎭', description });
+  // Assign a fixed seed to this character — used for ALL images to keep looks consistent
+  const fixedSeed = Math.floor(Math.random()*99999) + 100000;
+  chars.push({ name, emoji: emoji||'🎭', description, seed: fixedSeed });
   saveChars(chars);
   $('add-char-form').style.display = 'none';
   $('btn-show-add-char').style.display = 'inline-flex';
@@ -572,18 +601,26 @@ function buildPrompt(narration){
     const charDescs = APP.activeChars
       .map(i => chars[i])
       .filter(Boolean)
-      .map(c => `${c.name}: ${c.description}`)
+      .map(c => `${c.name} (${c.description}, always same appearance, consistent character design)`)
       .join('; ');
-    return `${subject}, featuring ${charDescs}, ${ch.style}`;
+    return `${subject}, ${charDescs}, ${ch.style}, consistent character design, same characters in every scene, character sheet consistency`;
   }
   return `${subject}, ${ch.style}`;
 }
 
-// Build Pollinations URL
+// Build Pollinations URL — uses fixed seed for kids channel to keep characters consistent
 function buildImageUrl(prompt){
   const encoded = encodeURIComponent(prompt);
-  const seed = Math.floor(Math.random()*999999);
-  return `https://image.pollinations.ai/prompt/${encoded}?width=576&height=1024&seed=${seed}&nologo=true`;
+  let seed;
+  if(APP.channel === 'kids' && APP.activeChars.length > 0){
+    // Use the first active character's fixed seed so all scenes look consistent
+    const chars = loadChars();
+    const firstChar = chars[APP.activeChars[0]];
+    seed = firstChar && firstChar.seed ? firstChar.seed : 42;
+  } else {
+    seed = Math.floor(Math.random()*999999);
+  }
+  return `https://image.pollinations.ai/prompt/${encoded}?width=576&height=1024&seed=${seed}&nologo=true&model=flux`;
 }
 
 // ── Step 1 ──
