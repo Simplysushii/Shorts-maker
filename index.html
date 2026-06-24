@@ -722,6 +722,30 @@ $('btn-gen-all').addEventListener('click', async()=>{
   $('btn-gen-all').disabled=false;
 });
 
+// Build the final prompt — always inject active character descriptions
+// This strips "Use saved characters" placeholder text and replaces with real descriptions
+function buildFinalPrompt(rawPrompt){
+  if(APP.channel !== 'kids' || APP.activeChars.length === 0) return rawPrompt;
+
+  const chars = loadChars();
+  const charDescs = APP.activeChars
+    .map(i => chars[i])
+    .filter(Boolean)
+    .map(c => `${c.name}: ${c.description}, always same appearance`)
+    .join('; ');
+
+  // Remove any "Use saved characters..." placeholder text the user may have typed
+  let cleaned = rawPrompt
+    .replace(/use saved characters?[^,.]*/gi, '')
+    .replace(/featuring saved characters?[^,.]*/gi, '')
+    .replace(/with saved characters?[^,.]*/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+    .replace(/^[,.\s]+/, '');
+
+  return `${charDescs}, ${cleaned}, consistent character design, same look in every scene, Pixar 3D animated style`;
+}
+
 window.generateScene = async function(i){
   const scene=APP.scenes[i];
   const card=$(`gen-card-${i}`);
@@ -732,7 +756,9 @@ window.generateScene = async function(i){
     </div>
     <div class="gen-card-label">Scene ${i+1}: generating…</div>`;
   try{
-    const url=buildImageUrl(scene.prompt||scene.narration);
+    // Always build final prompt with character injection
+    const finalPrompt = buildFinalPrompt(scene.prompt || scene.narration);
+    const url=buildImageUrl(finalPrompt);
     await new Promise((resolve,reject)=>{
       const img=new Image();
       img.crossOrigin='anonymous';
